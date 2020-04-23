@@ -1,10 +1,21 @@
 (function (time) {
-    let slides = $('.slide');
-    let indicators = $('.indicator');
+
+    // http://jquery.page2page.ru/index.php5/Функция_jQuery
+    // http://jquery.page2page.ru/index.php5/Объект_jQuery
+    // https://html5book.ru/vvedenie-v-jquery/
+
+    let $slides = $('.slide');
+    let $indicators = $('.indicator');
+    let $carousel = $('.carousel');
+    let $controls = $('.controls');
+    let $pausePlayBtn = $('#pause');
+    let $nextBtn = $('#next');
+    let $prevBtn = $('#previous');
+    let $indicatorContainer = $('.indicators');
 
     let currentSlide = 0;
     let isPlaying = true;
-    let CarouselInterval = time;
+    let carouselInterval = time;
     let swipeStartX = null;
     let swipeEndX = null;
 
@@ -13,11 +24,11 @@
     const SPACE = ' ';
 
     const goToSlide = (n) => {
-        $(slides[currentSlide]).toggleClass('active');
-        $(indicators[currentSlide]).toggleClass('active');
-        currentSlide = (n + slides.length) % slides.length;
-        $(slides[currentSlide]).toggleClass('active');
-        $(indicators[currentSlide]).toggleClass('active');
+        $($slides[currentSlide]).toggleClass('active');
+        $($indicators[currentSlide]).toggleClass('active');
+        currentSlide = (n + $slides.length) % $slides.length;
+        $($slides[currentSlide]).toggleClass('active');
+        $($indicators[currentSlide]).toggleClass('active');
     };
 
     const nextSlide = () => goToSlide(currentSlide + 1);
@@ -25,14 +36,14 @@
     const prevSlide = () => goToSlide(currentSlide - 1);
 
     const play = () => {
-        $('#pause').html('Pause');
-        interval = setInterval(nextSlide, CarouselInterval);
+        $pausePlayBtn.html('Pause');
+        interval = setInterval(nextSlide, carouselInterval);
         isPlaying = true;
     };
 
     const pause = () => {
         if (isPlaying) {
-            $('#pause').html('Play');
+            $pausePlayBtn.html('Play');
             isPlaying = false;
             clearInterval(interval);
         }
@@ -51,10 +62,8 @@
     };
 
     const clickIndicator = (e) => {
-        if ($(e.target).hasClass('indicator')) {
-            clickPause();
-            goToSlide(+$(e.target).attr('data-slide-to'));
-        }
+        clickPause();
+        goToSlide(+$(e.target).attr('data-slide-to'));
     };
 
     const pressKey = (e) => {
@@ -72,27 +81,32 @@
     };
 
     const setListeners = () => {
-        $('#pause').on('click', clickPause);
-        $('#next').on('click', clickNext);
-        $('#previous').on('click', clickPrev);
-        $('.indicators').on('click', clickIndicator);
+
+        // http://jquery.page2page.ru/index.php5/On
+
+        $pausePlayBtn.on('click', clickPause);
+        $nextBtn.on('click', clickNext);
+        $prevBtn.on('click', clickPrev);
+        $indicatorContainer.on('click', '.indicator', clickIndicator);
         $(document).on('keydown', pressKey);
-        $('.carousel').on('touchstart', swipeStart);
-        $('.carousel').on('touchend', swipeEnd);
+        $carousel.on('touchstart', swipeStart);
+        $carousel.on('touchend', swipeEnd);
     };
 
     const init = () => {
-        $('.indicators').css('display', 'flex');
-        $('.controls').css('display', 'block');
+        $indicatorContainer.css('display', 'flex');
+        $controls.css('display', 'block');
         setListeners();
-        interval = setInterval(nextSlide, CarouselInterval);
+        interval = setInterval(nextSlide, carouselInterval);
     };
 
     init();
 
-    let timeToConsole = (str) => str = str.replace(/...$/g, '');
+    // Slides interval
+
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
 
-    console.log(`Slide change interval - ${timeToConsole(`${time}`)} sec`);
+    //    let timeToConsole = (str) => str = str.replace(/...$/g, '');
+    //    console.log(`Slides change interval - ${timeToConsole(`${time}`)} sec`);
 
 }(3000));
